@@ -241,7 +241,7 @@ The analysis provider is an implementation detail of `backend/services/aiLayer.j
 
 ## Agency portal access
 
-The agency portal is available at `/portal/` on the deployed domain. Access is restricted to authorised officers of Kerala Police, the Excise Department, and CYBERDOME.
+Access is restricted to authorised officers of Kerala Police, the Excise Department, and CYBERDOME.
 
 To request access: **ciphershield@securespherelabs.com**
 
