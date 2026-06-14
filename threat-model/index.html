@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="CipherShield threat model — what we protect you against, what we cannot, and how to maximise your anonymity.">
+  <meta name="referrer" content="no-referrer">
+  <title>Can CipherShield Really Protect Me? — Threat Model</title>
+  <link rel="stylesheet" href="../submission/css/style.css">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-src 'none'; object-src 'none';">
+  <style>
+    .tm-section {
+      margin-bottom: 2.5rem;
+    }
+    .tm-section h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #1a202c;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #e2e8f0;
+    }
+    .tm-section p {
+      font-size: 0.9rem;
+      color: #4a5568;
+      line-height: 1.7;
+      margin-bottom: 0.75rem;
+    }
+
+    /* ── Verdict cards ── */
+    .verdict-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    @media (max-width: 600px) { .verdict-grid { grid-template-columns: 1fr; } }
+
+    .verdict-card {
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      border: 1.5px solid;
+    }
+    .verdict-card.yes {
+      background: #f0fff4;
+      border-color: #9ae6b4;
+    }
+    .verdict-card.no {
+      background: #fff5f5;
+      border-color: #feb2b2;
+    }
+    .verdict-card.partial {
+      background: #fffaf0;
+      border-color: #fbd38d;
+    }
+    .verdict-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.4rem;
+    }
+    .verdict-card.yes    .verdict-label { color: #276749; }
+    .verdict-card.no     .verdict-label { color: #9b2c2c; }
+    .verdict-card.partial .verdict-label { color: #c05621; }
+    .verdict-card h3 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #1a202c;
+      margin-bottom: 0.4rem;
+    }
+    .verdict-card p {
+      font-size: 0.8rem;
+      color: #4a5568;
+      line-height: 1.55;
+      margin: 0;
+    }
+
+    /* ── Threat rows ── */
+    .threat-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+    }
+    .threat-table th {
+      text-align: left;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #718096;
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1.5px solid #e2e8f0;
+    }
+    .threat-table td {
+      padding: 0.75rem;
+      border-bottom: 1px solid #edf2f7;
+      color: #2d3748;
+      vertical-align: top;
+      line-height: 1.5;
+    }
+    .threat-table tr:last-child td { border-bottom: none; }
+    .pill {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 0.2rem 0.6rem;
+      border-radius: 100px;
+      white-space: nowrap;
+    }
+    .pill-yes     { background: #c6f6d5; color: #22543d; }
+    .pill-no      { background: #fed7d7; color: #742a2a; }
+    .pill-partial { background: #feebc8; color: #7b341e; }
+
+    /* ── Tor callout ── */
+    .tor-callout {
+      background: #ebf4ff;
+      border: 1.5px solid #bee3f8;
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .tor-callout h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #1b6ca8;
+      margin-bottom: 0.5rem;
+    }
+    .tor-callout p {
+      font-size: 0.85rem;
+      color: #2a6496;
+      line-height: 1.6;
+      margin: 0;
+    }
+    .tor-callout a { color: #1b6ca8; }
+
+    /* ── Warning box ── */
+    .warn-box {
+      background: #fffaf0;
+      border: 1.5px solid #f6ad55;
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .warn-box h3 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #c05621;
+      margin-bottom: 0.5rem;
+    }
+    .warn-box ul {
+      margin: 0;
+      padding-left: 1.25rem;
+    }
+    .warn-box li {
+      font-size: 0.85rem;
+      color: #7b341e;
+      line-height: 1.65;
+    }
+
+    /* ── Tips list ── */
+    .tips-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .tips-list li {
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+      font-size: 0.875rem;
+      color: #2d3748;
+      line-height: 1.6;
+    }
+    .tip-icon {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #ebf5fb;
+      color: #1b6ca8;
+      font-size: 0.7rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 0.1rem;
+    }
+
+    .page-nav {
+      margin-bottom: 1.5rem;
+    }
+    .page-nav a {
+      font-size: 0.85rem;
+      color: #718096;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .page-nav a:hover { color: #1a202c; }
+
+    .page-footer-links {
+      margin-top: 2.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      font-size: 0.85rem;
+    }
+    .page-footer-links a { color: #1b6ca8; text-decoration: none; }
+    .page-footer-links a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<header>
+  <a class="brand" href="/">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 2L4 6v6c0 5.25 3.5 10.15 8 11.35C16.5 22.15 20 17.25 20 12V6L12 2z" fill="#1B6CA8"/>
+      <path d="M9 12l2 2 4-4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    CipherShield
+  </a>
+</header>
+
+<main style="max-width:720px">
+
+  <div class="page-nav">
+    <a href="/">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 11L5 7l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Back to CipherShield
+    </a>
+  </div>
+
+  <h1 class="page-title" style="font-size:1.6rem">Can CipherShield Really Protect Me?</h1>
+  <p class="page-sub">
+    Honest answers about what we protect, what we cannot protect, and how to maximise your safety before you submit a report.
+  </p>
+
+  <!-- ── Quick verdict ── -->
+  <div class="verdict-grid">
+    <div class="verdict-card yes">
+      <p class="verdict-label">Protected</p>
+      <h3>Your identity at submission</h3>
+      <p>Your IP, device info, and submission time are deleted before anything is stored. We are architecturally incapable of handing them over.</p>
+    </div>
+    <div class="verdict-card yes">
+      <p class="verdict-label">Protected</p>
+      <h3>Your report content at rest</h3>
+      <p>All text you enter is encrypted with AES-256-GCM before it is written to disk. The encryption key is never stored alongside the data.</p>
+    </div>
+    <div class="verdict-card no">
+      <p class="verdict-label">Not Protected</p>
+      <h3>What you write about yourself</h3>
+      <p>If you include your name, phone number, or identifying details in the report text, those details are stored (encrypted, but present). We cannot protect you from yourself.</p>
+    </div>
+    <div class="verdict-card partial">
+      <p class="verdict-label">Partial</p>
+      <h3>Network-level identity</h3>
+      <p>By default, your ISP can see you visited this site. Use Tor Browser or a trusted VPN to prevent this. CipherShield is fully Tor-compatible.</p>
+    </div>
+  </div>
+
+  <!-- ── Threat table ── -->
+  <div class="tm-section">
+    <h2>Threat-by-Threat Breakdown</h2>
+    <table class="threat-table">
+      <thead>
+        <tr>
+          <th>Threat</th>
+          <th>Protected?</th>
+          <th>Why</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Server is seized / hacked</td>
+          <td><span class="pill pill-yes">Protected</span></td>
+          <td>Your IP and device data were already deleted. Report text is encrypted at rest. There is no identity to recover.</td>
+        </tr>
+        <tr>
+          <td>Court order demanding reporter identity</td>
+          <td><span class="pill pill-yes">Protected</span></td>
+          <td>We do not possess your identity. We cannot hand over data we do not have.</td>
+        </tr>
+        <tr>
+          <td>Database leak</td>
+          <td><span class="pill pill-yes">Protected</span></td>
+          <td>All sensitive fields are AES-256-GCM encrypted. A leaked database reveals only ciphertext without the encryption key.</td>
+        </tr>
+        <tr>
+          <td>Your ISP watching your traffic</td>
+          <td><span class="pill pill-partial">Partial</span></td>
+          <td>Your ISP can see you visited ciphershield.securespherelabs.com but not what you submitted (HTTPS). Use Tor Browser to hide even the site visit.</td>
+        </tr>
+        <tr>
+          <td>Someone watching your screen or device</td>
+          <td><span class="pill pill-no">Not Protected</span></td>
+          <td>CipherShield cannot protect you from physical observation or device-level surveillance. Clear your browser history after use.</td>
+        </tr>
+        <tr>
+          <td>You identify yourself in the report text</td>
+          <td><span class="pill pill-no">Not Protected</span></td>
+          <td>The content of your report is stored. If you include your name, neighbourhood, or other identifiers, those details exist in the system.</td>
+        </tr>
+        <tr>
+          <td>A compromised device (spyware / keylogger)</td>
+          <td><span class="pill pill-no">Not Protected</span></td>
+          <td>If malware is running on your device it can capture what you type before it ever reaches us. Use a clean, trusted device.</td>
+        </tr>
+        <tr>
+          <td>Someone you told about your report</td>
+          <td><span class="pill pill-no">Not Protected</span></td>
+          <td>Do not tell anyone you submitted a report. Social exposure is outside our threat model.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── Tor section ── -->
+  <div class="tm-section">
+    <h2>How Tor Improves Your Anonymity</h2>
+    <p>
+      CipherShield already deletes your IP address before storing anything. But your Internet Service Provider (ISP) can still see that you visited this website — even over HTTPS, the domain name is visible.
+    </p>
+    <div class="tor-callout">
+      <h3>Using Tor Browser hides the site visit itself</h3>
+      <p>
+        When you use <a href="https://www.torproject.org/download/" target="_blank" rel="noopener noreferrer">Tor Browser</a>, your traffic is routed through three separate relays before reaching CipherShield. Your ISP only sees that you are using Tor — not which website you visited or what you submitted. This is the strongest network-level anonymity available.
+      </p>
+    </div>
+    <p>
+      CipherShield works over Tor without any modification. No JavaScript tricks, no WebRTC leaks, no external resources that could de-anonymise you. The entire page loads from a single origin with a strict Content Security Policy.
+    </p>
+  </div>
+
+  <!-- ── What NOT to do ── -->
+  <div class="tm-section">
+    <h2>What We Cannot Protect You From</h2>
+    <div class="warn-box">
+      <h3>Do not do any of the following</h3>
+      <ul>
+        <li>Include your name, phone number, workplace, or any other personal detail in the report</li>
+        <li>Submit from a device you do not control (work device, shared family computer, internet café)</li>
+        <li>Submit on a network that monitors traffic (school Wi-Fi, office network)</li>
+        <li>Tell anyone — family, friends, colleagues — that you submitted a report</li>
+        <li>Take a screenshot of your submission token and store it somewhere linked to your identity</li>
+        <li>Access the status page from a different device where you are logged in to accounts</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ── Best practice tips ── -->
+  <div class="tm-section">
+    <h2>How to Submit as Safely as Possible</h2>
+    <ul class="tips-list">
+      <li>
+        <div class="tip-icon">1</div>
+        <span>Use <strong>Tor Browser</strong> or a trusted VPN. This prevents your ISP from seeing you visited this site at all.</span>
+      </li>
+      <li>
+        <div class="tip-icon">2</div>
+        <span>Use your <strong>personal device on a personal mobile data connection</strong>, not a shared or monitored network.</span>
+      </li>
+      <li>
+        <div class="tip-icon">3</div>
+        <span><strong>Do not mention yourself</strong> in the report. Describe what you saw — not who you are or how you know.</span>
+      </li>
+      <li>
+        <div class="tip-icon">4</div>
+        <span><strong>Write down your status token on paper</strong> and store it safely. Do not save it in a notes app, screenshot, or message thread tied to your identity.</span>
+      </li>
+      <li>
+        <div class="tip-icon">5</div>
+        <span><strong>Clear your browser history</strong> after submitting, or use a private / incognito window so the visit does not appear in your history.</span>
+      </li>
+      <li>
+        <div class="tip-icon">6</div>
+        <span><strong>Do not tell anyone</strong> you submitted a report. The greatest anonymity risk is social, not technical.</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- ── What we protect → architectural proof ── -->
+  <div class="tm-section">
+    <h2>Why We Can Make These Claims</h2>
+    <p>
+      These are architectural guarantees, not policy promises. The anonymize middleware in our open-source backend runs before any route handler. It overwrites <code>req.ip</code>, all forwarded-for headers, the user-agent string, and the precise timestamp with empty values or a 6-hour-window approximation — before the report is ever processed or stored. Even if a developer wanted to log your IP, the data is already gone.
+    </p>
+    <p>
+      You can read the exact code responsible for this on GitHub:
+    </p>
+    <p>
+      <a href="https://github.com/securespherelabsdev/ciphershield-toofan/blob/main/backend/middleware/anonymize.js" target="_blank" rel="noopener noreferrer">
+        backend/middleware/anonymize.js →
+      </a>
+    </p>
+    <p>
+      The encryption implementation, scoring logic, and submission route are all public:
+    </p>
+    <p>
+      <a href="https://github.com/securespherelabsdev/ciphershield-toofan/" target="_blank" rel="noopener noreferrer">
+        github.com/securespherelabsdev/ciphershield-toofan →
+      </a>
+    </p>
+  </div>
+
+  <div class="page-footer-links">
+    <a href="/">← Home</a>
+    <a href="/submission/">Submit a Report</a>
+    <a href="/status/">Check Report Status</a>
+    <a href="https://github.com/securespherelabsdev/ciphershield-toofan/" target="_blank" rel="noopener noreferrer">View Source</a>
+  </div>
+
+</main>
+
+</body>
+</html>

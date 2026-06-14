@@ -406,6 +406,19 @@ nav {
   margin-top: 0.5rem;
 }
 
+.partnership-note {
+  max-width: 520px;
+  margin: 1.25rem auto 0;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.section-sub {
+  color: rgba(255,255,255,0.65);
+  margin-bottom: 2rem;
+}
+
 /* ── Footer ─────────────────────────────────────────────────────────────── */
 
 footer {
