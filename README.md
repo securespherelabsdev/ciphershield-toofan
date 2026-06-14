@@ -1,6 +1,6 @@
 # CipherShield
 
-**Anonymous civic intelligence reporting — built in partnership with Kerala Police, Operation Toofan.**
+**Anonymous civic intelligence reporting —, Operation Toofan.**
 
 CipherShield is a zero-knowledge tip-reporting platform. Citizens submit reports about suspected drug-related activity. Their identity — IP address, device fingerprint, precise timestamp, and all metadata — is permanently discarded at the moment the report arrives, before any data is written to disk. Law enforcement receive structured, confidence-scored intelligence leads with zero reporter data attached.
 
