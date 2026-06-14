@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Check the status of your anonymous CipherShield report.">
+  <meta name="referrer" content="no-referrer">
+  <title>Check Report Status — CipherShield</title>
+  <link rel="stylesheet" href="../submission/css/style.css">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-src 'none'; object-src 'none';">
+  <style>
+    .token-row {
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    .token-input {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 1.15rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.7rem 1rem;
+      border: 1.5px solid #CBD5E0;
+      border-radius: 10px;
+      flex: 1;
+      min-width: 200px;
+      background: #f8fafc;
+      color: #1a202c;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .token-input:focus {
+      outline: none;
+      border-color: #1B6CA8;
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(27,108,168,0.12);
+    }
+    .btn-check {
+      background: #1B6CA8;
+      color: #fff;
+      padding: 0.7rem 1.5rem;
+      border: none;
+      border-radius: 10px;
+      font-family: var(--font);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+    .btn-check:hover    { background: #155788; }
+    .btn-check:disabled { background: #94A3B8; cursor: not-allowed; }
+
+    /* ── Result card ── */
+    .result-card {
+      display: none;
+      border-radius: 14px;
+      margin-top: 1.5rem;
+      border: 1.5px solid #e2e8f0;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .result-card.visible { display: block; }
+
+    /* Header band */
+    .rc-header {
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .rc-header.found    { background: #EBF5FB; border-bottom: 1.5px solid #BEE3F8; }
+    .rc-header.not-found{ background: #F7FAFC; border-bottom: 1.5px solid #E2E8F0; }
+    .rc-header.err      { background: #FFF5F5; border-bottom: 1.5px solid #FED7D7; }
+
+    .rc-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #1A202C;
+      margin-bottom: 0.2rem;
+    }
+    .rc-sub { font-size: 0.83rem; color: #718096; }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 0.4rem 0.9rem;
+      border-radius: 100px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .status-badge .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+    .badge-review   { background: #FFFAF0; color: #C05621; border: 1.5px solid #FBD38D; }
+    .badge-field    { background: #EBF5FB; color: #1B6CA8; border: 1.5px solid #90CDF4; }
+    .badge-escalate { background: #FAF5FF; color: #6B46C1; border: 1.5px solid #D6BCFA; }
+    .badge-actioned { background: #F0FFF4; color: #276749; border: 1.5px solid #9AE6B4; }
+    .badge-nofind   { background: #F7FAFC; color: #4A5568; border: 1.5px solid #CBD5E0; }
+
+    /* ── Timeline ── */
+    .rc-timeline {
+      padding: 1.5rem 1.5rem 0.75rem;
+    }
+    .tl-step {
+      display: flex;
+      gap: 1rem;
+      position: relative;
+    }
+    .tl-step:not(:last-child) { padding-bottom: 1.25rem; }
+    .tl-step:not(:last-child)::before {
+      content: '';
+      position: absolute;
+      left: 12px;
+      top: 26px;
+      width: 1.5px;
+      bottom: 0;
+      background: #E2E8F0;
+    }
+    .tl-icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+      margin-top: 1px;
+    }
+    .tl-icon.done    { background: #1B6CA8; border: 2px solid #1B6CA8; }
+    .tl-icon.current { background: #fff; border: 2.5px solid #ED8936; }
+    .tl-icon.pending { background: #fff; border: 2px solid #CBD5E0; }
+    .tl-icon.done svg { display: block; }
+    .tl-icon svg { display: none; width:12px; height:12px; }
+    .current-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #ED8936;
+      animation: pulse 1.8s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 1; }
+      50%      { opacity: 0.4; }
+    }
+    .tl-body { flex: 1; }
+    .tl-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #1A202C;
+      line-height: 1.3;
+    }
+    .tl-title.pending { color: #A0AEC0; font-weight: 400; }
+    .tl-desc {
+      font-size: 0.8rem;
+      color: #718096;
+      margin-top: 0.2rem;
+      line-height: 1.5;
+    }
+    .tl-date {
+      font-size: 0.75rem;
+      color: #A0AEC0;
+      margin-top: 0.2rem;
+    }
+    .tl-dept {
+      display: inline-block;
+      margin-top: 0.35rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #1B6CA8;
+      background: rgba(27,108,168,0.08);
+      border: 1px solid rgba(27,108,168,0.2);
+      border-radius: 100px;
+      padding: 0.15rem 0.65rem;
+    }
+
+    /* ── Footer meta ── */
+    .rc-meta {
+      padding: 0.875rem 1.5rem;
+      border-top: 1px solid #EDF2F7;
+      background: #F7FAFC;
+      font-size: 0.78rem;
+      color: #A0AEC0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+    }
+    .rc-meta strong { color: #4A5568; }
+
+    /* ── Not found / error states ── */
+    .rc-notfound {
+      padding: 2rem 1.5rem;
+      text-align: center;
+    }
+    .rc-notfound p { color: #4A5568; font-size: 0.9rem; margin-bottom: 0.5rem; }
+    .rc-notfound small { color: #A0AEC0; font-size: 0.8rem; }
+
+    /* ── Guide card ── */
+    .guide-card {
+      background: #fff;
+      border: 1.5px solid #E2E8F0;
+      border-radius: 14px;
+      padding: 1.25rem 1.5rem;
+      margin-top: 1.25rem;
+    }
+    .guide-card h3 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #1A202C;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .guide-steps { display: flex; flex-direction: column; gap: 0.75rem; }
+    .guide-step  { display: flex; gap: 0.75rem; align-items: flex-start; }
+    .gs-num {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: #EBF5FB;
+      color: #1B6CA8;
+      font-size: 0.7rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 0.1rem;
+    }
+    .gs-title { font-size: 0.85rem; font-weight: 600; color: #2D3748; }
+    .gs-desc  { font-size: 0.78rem; color: #718096; margin-top: 0.15rem; line-height: 1.5; }
+
+    .page-footer {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.85rem;
+      color: #A0AEC0;
+    }
+    .page-footer a { color: #1B6CA8; text-decoration: none; }
+    .page-footer a:hover { text-decoration: underline; }
+    .token-hint { font-size: 0.75rem; color: #A0AEC0; margin-top: 0.5rem; }
+    .guide-footer { font-size: 0.75rem; color: #A0AEC0; margin-top: 1rem; line-height: 1.6; }
+    .err-title { color: #9B2C2C; }
+    .form-group-flush { margin-bottom: 0; }
+    .token-row { margin-top: 0.625rem; }
+  </style>
+</head>
+<body>
+
+<header>
+  <a class="brand" href="/">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 2L4 6v6c0 5.25 3.5 10.15 8 11.35C16.5 22.15 20 17.25 20 12V6L12 2z" fill="#1B6CA8"/>
+      <path d="M9 12l2 2 4-4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    CipherShield
+  </a>
+</header>
+
+<main>
+  <h1 class="page-title">Check Report Status</h1>
+  <p class="page-sub">Enter the token you received after submitting your report.</p>
+
+  <div class="privacy-notice" role="note">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="M8 1L2 4v4c0 3.5 2.33 6.77 6 7.56C11.67 14.77 14 11.5 14 8V4L8 1z" fill="#1B6CA8"/>
+    </svg>
+    <span>
+      Your token is the <strong>only</strong> connection to your report.
+      Checking your status does not identify you.
+    </span>
+  </div>
+
+  <div class="form-card">
+    <div class="form-group form-group-flush">
+      <label for="token-input">Status Token</label>
+      <div class="token-row">
+        <input
+          type="text"
+          id="token-input"
+          name="token"
+          class="token-input"
+          maxlength="19"
+          placeholder="XXXX-XXXX-XXXX-XXXX"
+          autocomplete="off"
+          spellcheck="false"
+          aria-label="Report status token"
+        >
+        <button type="button" class="btn-check" id="check-btn">Check Status</button>
+      </div>
+      <p class="token-hint">
+        The token was shown on your confirmation screen after submitting. Format: XXXX-XXXX-XXXX-XXXX
+      </p>
+    </div>
+
+    <div class="result-card" id="result-card" role="region" aria-live="polite"></div>
+  </div>
+
+  <!-- What the stages mean -->
+  <div class="guide-card">
+    <h3>What the stages mean</h3>
+    <div class="guide-steps">
+      <div class="guide-step">
+        <div class="gs-num">1</div>
+        <div>
+          <p class="gs-title">Report Received</p>
+          <p class="gs-desc">Your report has been logged and is being assessed by the intelligence team. No action needed from you.</p>
+        </div>
+      </div>
+      <div class="guide-step">
+        <div class="gs-num">2</div>
+        <div>
+          <p class="gs-title">Passed to Field Officers</p>
+          <p class="gs-desc">The report scored high enough credibility to be forwarded to law enforcement officers for investigation.</p>
+        </div>
+      </div>
+      <div class="guide-step">
+        <div class="gs-num">3</div>
+        <div>
+          <p class="gs-title">Escalated to Specialist Unit</p>
+          <p class="gs-desc">The case has been referred to a specialist unit (e.g. Excise, Cyber Dome) for further action.</p>
+        </div>
+      </div>
+      <div class="guide-step">
+        <div class="gs-num">4</div>
+        <div>
+          <p class="gs-title">Closed</p>
+          <p class="gs-desc">The case is closed — either action was taken based on your report, or the investigation found no supporting evidence. Both outcomes are normal.</p>
+        </div>
+      </div>
+    </div>
+    <p class="guide-footer">
+      Status updates may take 24–72 hours to reflect.
+      Not every report progresses through all stages — a report can move directly from assessment to closed.
+    </p>
+  </div>
+
+  <p class="page-footer">
+    <a href="/">← Back to CipherShield</a>
+    &nbsp;·&nbsp;
+    <a href="/submission/">Submit another report</a>
+  </p>
+</main>
+
+<script src="js/status.js"></script>
+
+</body>
+</html>

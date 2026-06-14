@@ -1,0 +1,29 @@
+# Environment — never commit real secrets
+.env
+.env.local
+.env.*.local
+
+# Dependencies
+node_modules/
+agency-portal/node_modules/
+
+# Build output
+dist/
+agency-portal/dist/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Credentials / certs
+*.key
+*.pem
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Claude Code session files (contain server credentials)
+.claude/

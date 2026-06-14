@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Submit an anonymous report to Kerala Police Operation Toofan. Your identity is permanently deleted before your report is stored.">
+  <meta name="referrer" content="no-referrer">
+  <title>Submit a Report — CipherShield</title>
+  <link rel="stylesheet" href="css/style.css">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-src 'none'; object-src 'none';">
+  <style>
+    .geo-box {
+      border: 1.5px dashed var(--border);
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      background: #f8fafc;
+    }
+    .geo-box-header {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 0.5rem;
+    }
+    .geo-box-header svg { flex-shrink: 0; color: #1B6CA8; }
+    .geo-box-label {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #2d3748;
+    }
+    .geo-box-sub {
+      font-size: 0.78rem;
+      color: #718096;
+      margin-bottom: 0.85rem;
+      line-height: 1.5;
+    }
+    .geo-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #1B6CA8;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.55rem 1.1rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .geo-btn:hover { background: #155788; }
+    .geo-btn:disabled { background: #94a3b8; cursor: not-allowed; }
+    .geo-btn.geo-clear {
+      background: transparent;
+      color: #718096;
+      border: 1.5px solid #e2e8f0;
+      margin-left: 0.5rem;
+    }
+    .geo-btn.geo-clear:hover { background: #f1f5f9; }
+    .geo-result {
+      display: none;
+      margin-top: 0.75rem;
+      padding: 0.65rem 0.875rem;
+      background: #ebf8ff;
+      border: 1px solid #bee3f8;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      color: #2a6496;
+      font-family: "Courier New", monospace;
+    }
+    .geo-result.visible { display: block; }
+    .geo-error {
+      display: none;
+      margin-top: 0.6rem;
+      font-size: 0.8rem;
+      color: #c53030;
+    }
+    .geo-error.visible { display: block; }
+    .geo-privacy-note {
+      margin-top: 0.6rem;
+      font-size: 0.75rem;
+      color: #a0aec0;
+      line-height: 1.5;
+    }
+    .hidden { display: none !important; }
+    .geo-clear-mt { margin-top: 0.5rem; }
+    #submit-error {
+      color: #C53030;
+      font-size: 0.875rem;
+      margin-bottom: 0.75rem;
+    }
+    .token-sub {
+      margin-bottom: 1.25rem;
+      color: #4A5568;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a class="brand" href="/">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 2L4 6v6c0 5.25 3.5 10.15 8 11.35C16.5 22.15 20 17.25 20 12V6L12 2z" fill="#1B6CA8"/>
+      <path d="M9 12l2 2 4-4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    CipherShield
+  </a>
+</header>
+
+<main>
+  <h1 class="page-title">Submit a Report</h1>
+  <p class="page-sub">All fields except Report Type are optional. Share only what you are comfortable sharing.</p>
+
+  <div class="privacy-notice" role="note">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="M8 1L2 4v4c0 3.5 2.33 6.77 6 7.56C11.67 14.77 14 11.5 14 8V4L8 1z" fill="#1B6CA8"/>
+    </svg>
+    <span>
+      When you submit, your IP address, device information, and exact time are
+      <strong>permanently deleted</strong> before your report is stored. We cannot identify you.
+    </span>
+  </div>
+
+  <div class="form-card" id="form-card">
+    <form
+      id="report-form"
+      method="POST"
+      action="/api/submit"
+      autocomplete="off"
+      spellcheck="false"
+    >
+
+      <!-- Report Type -->
+      <div class="form-group">
+        <label for="report_type">
+          Report Type <span class="required" aria-label="required">*</span>
+        </label>
+        <select id="report_type" name="report_type" required>
+          <option value="" disabled selected>Select a report type…</option>
+          <option value="Drug Sale Activity">Drug Sale Activity</option>
+          <option value="Drug Manufacturing">Drug Manufacturing</option>
+          <option value="Drug Transportation">Drug Transportation</option>
+          <option value="Storage Location">Storage Location</option>
+          <option value="Suspicious Person or Activity">Suspicious Person or Activity</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <!-- District -->
+      <div class="form-group">
+        <label for="district">
+          District <span class="optional">(optional)</span>
+        </label>
+        <select id="district" name="district">
+          <option value="">Select a district…</option>
+          <option>Thiruvananthapuram</option>
+          <option>Kollam</option>
+          <option>Pathanamthitta</option>
+          <option>Alappuzha</option>
+          <option>Kottayam</option>
+          <option>Idukki</option>
+          <option>Ernakulam</option>
+          <option>Thrissur</option>
+          <option>Palakkad</option>
+          <option>Malappuram</option>
+          <option>Kozhikode</option>
+          <option>Wayanad</option>
+          <option>Kannur</option>
+          <option>Kasaragod</option>
+        </select>
+      </div>
+
+      <!-- General Area -->
+      <div class="form-group">
+        <label for="area_desc">
+          General Area <span class="optional">(optional)</span>
+        </label>
+        <textarea
+          id="area_desc"
+          name="area_desc"
+          maxlength="500"
+          rows="3"
+          autocomplete="off"
+          spellcheck="false"
+          placeholder="Describe the general area — neighbourhood, landmark, or road name."
+        ></textarea>
+        <div class="char-count" id="area_desc_count" aria-live="polite">0 / 500</div>
+      </div>
+
+      <!-- GPS Location (optional, user-initiated) -->
+      <div class="form-group">
+        <label>
+          GPS Location <span class="optional">(optional — only if you are at the location now)</span>
+        </label>
+        <div class="geo-box">
+          <p class="geo-box-sub">
+            If you are <strong>currently at or near the location</strong> of the reported activity, tap below to capture the GPS coordinates. Officers will use this to locate the area precisely. Skip this if you are not at the location.
+          </p>
+
+          <!-- State: idle -->
+          <div id="geo-idle">
+            <button type="button" id="geo-btn" class="geo-btn">
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                <circle cx="6.5" cy="6.5" r="2.5" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M6.5 1v1.5M6.5 10v1.5M1 6.5h1.5M10 6.5h1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+              <span id="geo-btn-label">Capture My Location</span>
+            </button>
+          </div>
+
+          <!-- State: captured (hidden initially) -->
+          <div id="geo-captured" class="hidden">
+            <div class="geo-result visible" id="geo-result" role="status" aria-live="polite"></div>
+            <button type="button" id="geo-clear-btn" class="geo-btn geo-clear geo-clear-mt">
+              ✕ Remove Location
+            </button>
+          </div>
+
+          <div class="geo-error" id="geo-error" role="alert"></div>
+          <p class="geo-privacy-note">
+            Coordinates are encrypted before storage and never used to identify you.
+          </p>
+          <input type="hidden" id="geo_lat" name="geo_lat" value="">
+          <input type="hidden" id="geo_lng" name="geo_lng" value="">
+        </div>
+      </div>
+
+      <!-- When Observed -->
+      <div class="form-group">
+        <label for="time_observed">
+          When did you observe this? <span class="optional">(optional)</span>
+        </label>
+        <select id="time_observed" name="time_observed">
+          <option value="">Select a timeframe…</option>
+          <option value="Today">Today</option>
+          <option value="Yesterday">Yesterday</option>
+          <option value="Within the past week">Within the past week</option>
+          <option value="More than a week ago">More than a week ago</option>
+        </select>
+      </div>
+
+      <!-- Details -->
+      <div class="form-group">
+        <label for="details">
+          What did you observe? <span class="optional">(optional)</span>
+        </label>
+        <textarea
+          id="details"
+          name="details"
+          maxlength="1000"
+          rows="5"
+          autocomplete="off"
+          spellcheck="false"
+          placeholder="Describe what you saw. Include as much or as little detail as you are comfortable sharing."
+        ></textarea>
+        <div class="char-count" id="details_count" aria-live="polite">0 / 1000</div>
+      </div>
+
+      <!-- Confidence -->
+      <div class="form-group">
+        <label>
+          How confident are you? <span class="optional">(optional)</span>
+        </label>
+        <div class="radio-group" role="radiogroup" aria-label="Confidence level">
+          <label class="radio-label">
+            <input type="radio" name="confidence_raw" value="I have a suspicion">
+            I have a suspicion
+          </label>
+          <label class="radio-label">
+            <input type="radio" name="confidence_raw" value="I am fairly certain">
+            I am fairly certain
+          </label>
+          <label class="radio-label">
+            <input type="radio" name="confidence_raw" value="I witnessed this directly">
+            I witnessed this directly
+          </label>
+        </div>
+      </div>
+
+      <p class="submit-privacy-note">
+        When you submit, your IP address, device information, and exact submission time are
+        permanently deleted before this report is stored. We cannot identify you.
+      </p>
+      <div id="submit-error" class="hidden" role="alert"></div>
+      <button type="submit" class="btn-submit" id="submit-btn">Submit Report</button>
+
+    </form>
+  </div>
+
+  <!-- Token display (shown after successful submission) -->
+  <div id="token-display" role="region" aria-label="Your report token" aria-live="polite">
+    <div class="token-header">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+        <path d="M10 1.5L3 5v5.5c0 4.38 2.92 8.46 7 9.46 4.08-1 7-5.08 7-9.46V5L10 1.5z" fill="#38A169"/>
+        <path d="M7 10l2.5 2.5 4-4" stroke="#fff" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Report received
+    </div>
+    <p class="token-sub">Your status token — write it down or copy it</p>
+    <div class="token-value" id="token-value" aria-label="Status token"></div>
+    <br>
+    <button class="copy-btn" id="copy-btn" type="button">Copy Token</button>
+    <p class="token-warning">
+      <strong>Save this token now.</strong> It is the only way to check your report status.
+      We do not store your identity, so we cannot recover this token for you.
+    </p>
+    <a href="/status/" class="status-link">
+      Check report status →
+    </a>
+  </div>
+
+</main>
+
+<script src="js/submit.js"></script>
+
+</body>
+</html>
