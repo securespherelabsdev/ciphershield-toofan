@@ -37,7 +37,7 @@
       </svg>
       CipherShield
     </a>
-    <ul class="nav-links">
+    <ul class="nav-links" id="nav-links">
       <li><a href="#how-it-works">How It Works</a></li>
       <li><a href="#never-collect">Privacy</a></li>
       <li><a href="/threat-model/">Threat Model</a></li>
@@ -45,6 +45,9 @@
       <li><a href="#audience">For Officers</a></li>
       <li><a href="/submission/" class="nav-cta">Submit a Report</a></li>
     </ul>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="nav-links">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
 
@@ -212,7 +215,7 @@
             <path d="M3 9l4 4 8-8" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
-        <div class="js-connector"></div>
+
         <div class="js-body">
           <h4>Received</h4>
           <p>Your report arrives. Your IP, device info, and timestamp are permanently deleted before anything is stored.</p>
@@ -226,7 +229,7 @@
             <path d="M9 2v2M9 14v2M2 9h2M14 9h2" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
           </svg>
         </div>
-        <div class="js-connector"></div>
+
         <div class="js-body">
           <h4>Scored</h4>
           <p>An automated credibility score (0–100) is assigned based on detail, district data, and corroboration. No human sees it yet.</p>
@@ -239,7 +242,7 @@
             <path d="M9 2L2 6v5c0 4 3 7.5 7 8.5 4-1 7-4.5 7-8.5V6L9 2z" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/>
           </svg>
         </div>
-        <div class="js-connector"></div>
+
         <div class="js-body">
           <h4>Under Review</h4>
           <p>An intelligence officer reviews the lead. High-scoring reports are prioritised. The officer may request corroboration before escalating.</p>
@@ -253,7 +256,7 @@
             <path d="M5 5V4a4 4 0 018 0v1" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
           </svg>
         </div>
-        <div class="js-connector"></div>
+
         <div class="js-body">
           <h4>Dispatched</h4>
           <p>The lead is dispatched to field officers with an AI-generated intelligence briefing. Your report status updates to reflect this.</p>
@@ -379,7 +382,9 @@
 <!-- ── Who We Are ─────────────────────────────────────────────────────────── -->
 <section id="who-we-are">
   <div class="container">
+    <span class="section-label">About SecureSphereLabs</span>
     <h2>Who We Are</h2>
+    <p class="who-intro">An independent cybersecurity and civic technology team. We build privacy-first tools that ordinary people can actually trust — because the trust is verifiable, not promised.</p>
     <div class="who-grid">
       <div class="who-text">
         <p>
