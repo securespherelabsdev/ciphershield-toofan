@@ -8,10 +8,24 @@
   <title>CipherShield — Anonymous Civic Reporting</title>
   <!-- No external stylesheets, no external fonts, no tracking pixels -->
   <link rel="stylesheet" href="css/style.css">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0D1B2A">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="CipherShield">
   <!-- Content Security Policy: no external sources permitted -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-src 'none'; object-src 'none';">
 </head>
 <body>
+
+<!-- ── Emergency Disclaimer ──────────────────────────────────────────────── -->
+<div class="emergency-bar" role="alert">
+  <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+    <path d="M7.5 1L1 13h13L7.5 1z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M7.5 6v3M7.5 11v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+  </svg>
+  <span><strong>Not an emergency service.</strong> If someone is in immediate danger, call <strong>100</strong>. This platform is for non-urgent anonymous tips only.</span>
+</div>
 
 <!-- ── Navigation ───────────────────────────────────────────────────────────── -->
 <nav>
@@ -185,6 +199,152 @@
   </div>
 </section>
 
+<!-- ── What Happens to Your Report ───────────────────────────────────────── -->
+<section id="journey">
+  <div class="container">
+    <h2>What Happens to Your Report</h2>
+    <p class="journey-sub">You are not shouting into a void. Here is exactly what happens after you submit.</p>
+    <div class="journey-steps">
+
+      <div class="journey-step done">
+        <div class="js-icon">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M3 9l4 4 8-8" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="js-connector"></div>
+        <div class="js-body">
+          <h4>Received</h4>
+          <p>Your report arrives. Your IP, device info, and timestamp are permanently deleted before anything is stored.</p>
+        </div>
+      </div>
+
+      <div class="journey-step done">
+        <div class="js-icon">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <circle cx="9" cy="9" r="3" stroke="currentColor" stroke-width="1.75"/>
+            <path d="M9 2v2M9 14v2M2 9h2M14 9h2" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="js-connector"></div>
+        <div class="js-body">
+          <h4>Scored</h4>
+          <p>An automated credibility score (0–100) is assigned based on detail, district data, and corroboration. No human sees it yet.</p>
+        </div>
+      </div>
+
+      <div class="journey-step active">
+        <div class="js-icon">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M9 2L2 6v5c0 4 3 7.5 7 8.5 4-1 7-4.5 7-8.5V6L9 2z" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="js-connector"></div>
+        <div class="js-body">
+          <h4>Under Review</h4>
+          <p>An intelligence officer reviews the lead. High-scoring reports are prioritised. The officer may request corroboration before escalating.</p>
+        </div>
+      </div>
+
+      <div class="journey-step pending">
+        <div class="js-icon">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <rect x="2" y="5" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.75"/>
+            <path d="M5 5V4a4 4 0 018 0v1" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="js-connector"></div>
+        <div class="js-body">
+          <h4>Dispatched</h4>
+          <p>The lead is dispatched to field officers with an AI-generated intelligence briefing. Your report status updates to reflect this.</p>
+        </div>
+      </div>
+
+      <div class="journey-step pending last">
+        <div class="js-icon">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <circle cx="9" cy="9" r="7" stroke="currentColor" stroke-width="1.75"/>
+            <path d="M6 9l2.5 2.5 4.5-4.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="js-body">
+          <h4>Investigated</h4>
+          <p>Field officers act on the intelligence. You can check your report's status at any time using your anonymous token — no account needed.</p>
+        </div>
+      </div>
+
+    </div>
+    <p class="journey-note">
+      Status updates may take 24–72 hours to reflect. Use your token at
+      <a href="/status/">ciphershield.securespherelabs.com/status/</a> to track progress.
+    </p>
+  </div>
+</section>
+
+<!-- ── FAQ ────────────────────────────────────────────────────────────────── -->
+<section id="faq">
+  <div class="container">
+    <h2>Questions People Are Afraid to Ask</h2>
+    <p class="faq-sub">Honest answers. No reassuring waffle.</p>
+    <div class="faq-list">
+
+      <details class="faq-item">
+        <summary>Can police trace me through CipherShield?</summary>
+        <div class="faq-answer">
+          <p>No. The moment your report arrives, our server permanently deletes your IP address, device fingerprint, and exact submission time — before anything is written to disk. This is not a policy promise. It is an architectural guarantee baked into the code. Even if Kerala Police, a court, or any authority demanded your identity, we have nothing to hand over. The data never existed in our system.</p>
+          <p>You can verify this yourself: <a href="https://github.com/securespherelabsdev/ciphershield-toofan/blob/main/backend/middleware/anonymize.js" target="_blank" rel="noopener noreferrer">read the source code →</a></p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>What if the government demands my identity?</summary>
+        <div class="faq-answer">
+          <p>We would comply with any lawful order — but we would have nothing to give. We cannot produce data we do not have. Your IP address is gone. Your device information is gone. The precise time you submitted is gone. A court order served to us would return empty hands.</p>
+          <p>This is by design. We believe anonymity should be technically enforced, not just legally promised.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Is visiting this site itself risky?</summary>
+        <div class="faq-answer">
+          <p>Over a normal connection, your Internet Service Provider can see that you visited <em>ciphershield.securespherelabs.com</em> — but not what you did or submitted here. HTTPS encrypts the content, not the destination.</p>
+          <p>If you want to hide even the site visit, use <strong>Tor Browser</strong>. CipherShield works fully over Tor with no modifications needed. See our <a href="/threat-model/">Threat Model</a> for a full breakdown of risks.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>What happens after I submit?</summary>
+        <div class="faq-answer">
+          <p>Your report is assigned a credibility score and enters a review queue. An officer reviews it, and if it scores high enough, it is dispatched to field officers with an AI-generated intelligence briefing. You receive a one-time anonymous token you can use to check your report's status at any time — no account, no phone number, no identity required.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Is this legal to use?</summary>
+        <div class="faq-answer">
+          <p>Yes. Submitting an anonymous tip about suspected criminal activity is legal and encouraged. CipherShield is a civic reporting tool, not a channel for making false accusations — reports are credibility-scored precisely to filter out malicious or baseless tips.</p>
+          <p>If you are concerned about a specific legal question, consult a legal professional. We are not lawyers and this is not legal advice.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Who can see my report?</summary>
+        <div class="faq-answer">
+          <p>Only authorised officers who have been granted access to the CipherShield agency portal. Reports are encrypted at rest with AES-256-GCM. Officers see the content of your report — what you observed, where, and when — but they see zero information about who submitted it, because that information was deleted before the report was ever stored.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Is CipherShield an official government product?</summary>
+        <div class="faq-answer">
+          <p>No. CipherShield is an independent civic technology initiative built by <strong>SecureSphereLabs</strong>. We have reached out to Kerala Police and relevant authorities and welcome formal collaboration, but no official agreement is currently in place. We make no claim of government endorsement. The platform is open source — anyone can audit it.</p>
+        </div>
+      </details>
+
+    </div>
+  </div>
+</section>
+
 <!-- ── Technical Transparency ─────────────────────────────────────────────── -->
 <section id="transparency">
   <div class="container">
@@ -194,6 +354,19 @@
       from the moment it arrives to the moment it reaches law enforcement — is publicly
       auditable by security researchers, civil society organisations, and the press.
     </p>
+    <div class="disclosure-box">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M8 5v4M8 10.5v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <div>
+        <strong>Security researchers:</strong> If you find a vulnerability in CipherShield, please disclose it responsibly to
+        <a href="mailto:security@securespherelabs.com">security@securespherelabs.com</a>.
+        We will acknowledge your report within 48 hours, work to fix it promptly, and credit you publicly if you wish.
+        Please do not publish details before we have had a chance to patch.
+      </div>
+    </div>
+
     <a href="https://github.com/securespherelabsdev/ciphershield-toofan/" target="_blank" rel="noopener noreferrer" class="btn-outline">
       <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
         <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
@@ -304,6 +477,17 @@
   </div>
 </section>
 
+<!-- ── PWA Install Banner ─────────────────────────────────────────────────── -->
+<div class="pwa-banner" id="pwa-banner" role="complementary" aria-label="Install CipherShield">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M12 2L4 6v6c0 5.25 3.5 10.15 8 11.35C16.5 22.15 20 17.25 20 12V6L12 2z" fill="#1B6CA8"/>
+    <path d="M9 12l2 2 4-4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  <p><strong>Add CipherShield</strong> to your home screen for quick access when you need it.</p>
+  <button class="pwa-install-btn" id="pwa-install-btn">Install</button>
+  <button class="pwa-dismiss-btn" id="pwa-dismiss-btn" aria-label="Dismiss">×</button>
+</div>
+
 <!-- ── Footer ─────────────────────────────────────────────────────────────── -->
 <footer>
   <div class="container">
@@ -321,8 +505,9 @@
   </div>
 </footer>
 
-<!-- Progressive enhancement: smooth scroll only. No tracking. -->
+<!-- Progressive enhancement: smooth scroll + PWA install. No tracking. -->
 <script src="js/main.js"></script>
+<script src="js/pwa.js"></script>
 
 </body>
 </html>

@@ -419,6 +419,266 @@ nav {
   margin-bottom: 2rem;
 }
 
+/* ── Emergency Bar ───────────────────────────────────────────────────────── */
+
+.emergency-bar {
+  background: #7B2D00;
+  color: #FED7AA;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  padding: 0.6rem 1.5rem;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  text-align: center;
+}
+.emergency-bar svg { flex-shrink: 0; color: #FDBA74; }
+.emergency-bar strong { color: #FFF7ED; }
+
+/* ── Journey / Timeline ──────────────────────────────────────────────────── */
+
+#journey {
+  background: var(--navy);
+  padding: 5rem 0;
+  color: var(--white);
+}
+#journey h2 { color: var(--white); text-align: center; }
+.journey-sub {
+  text-align: center;
+  color: rgba(255,255,255,0.6);
+  margin: 0.5rem 0 3rem;
+  font-size: 0.95rem;
+}
+.journey-steps {
+  display: flex;
+  gap: 0;
+  align-items: flex-start;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0;
+}
+.journey-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  min-width: 140px;
+  max-width: 200px;
+  position: relative;
+}
+.js-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 1rem;
+}
+.journey-step.done    .js-icon { background: #1B6CA8; color: #fff; border: 2px solid #1B6CA8; }
+.journey-step.active  .js-icon { background: transparent; color: #F6AD55; border: 2px solid #F6AD55; }
+.journey-step.pending .js-icon { background: transparent; color: rgba(255,255,255,0.25); border: 2px solid rgba(255,255,255,0.2); }
+
+.js-connector {
+  position: absolute;
+  top: 24px;
+  left: calc(50% + 24px);
+  right: calc(-50% + 24px);
+  height: 2px;
+  background: rgba(255,255,255,0.15);
+  z-index: 0;
+}
+.journey-step.done .js-connector { background: #1B6CA8; }
+
+.js-body { text-align: center; padding: 0 0.75rem; }
+.js-body h4 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 0.35rem;
+}
+.journey-step.pending .js-body h4 { color: rgba(255,255,255,0.4); }
+.js-body p {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.55;
+}
+.journey-step.done .js-body p,
+.journey-step.active .js-body p { color: rgba(255,255,255,0.7); }
+
+.journey-note {
+  text-align: center;
+  margin-top: 2.5rem;
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.45);
+}
+.journey-note a { color: rgba(255,255,255,0.65); }
+
+@media (max-width: 640px) {
+  .journey-steps {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+    padding-left: 1.5rem;
+  }
+  .journey-step {
+    flex-direction: row;
+    align-items: flex-start;
+    max-width: 100%;
+    gap: 1rem;
+    min-width: unset;
+    width: 100%;
+  }
+  .js-icon { margin-bottom: 0; flex-shrink: 0; }
+  .js-connector {
+    top: 48px;
+    left: 23px;
+    right: unset;
+    width: 2px;
+    height: calc(100% + 1.5rem);
+    bottom: unset;
+  }
+  .js-body { text-align: left; padding: 0; }
+}
+
+/* ── FAQ ─────────────────────────────────────────────────────────────────── */
+
+#faq {
+  background: var(--gray);
+  padding: 5rem 0;
+}
+#faq h2 { text-align: center; }
+.faq-sub {
+  text-align: center;
+  color: var(--text-secondary);
+  margin: 0.5rem 0 2.5rem;
+  font-size: 0.95rem;
+}
+.faq-list {
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.faq-item {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+.faq-item[open] { border-color: #93C5FD; }
+.faq-item summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 1.1rem 1.25rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--navy);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  user-select: none;
+}
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary::after {
+  content: '+';
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: var(--teal);
+  flex-shrink: 0;
+  line-height: 1;
+  transition: transform 0.2s;
+}
+.faq-item[open] summary::after { content: '−'; }
+.faq-item summary:hover { background: #F8FAFC; }
+.faq-answer {
+  padding: 0 1.25rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.faq-answer p {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+.faq-answer a { color: var(--teal); }
+
+/* ── Responsible Disclosure box ──────────────────────────────────────────── */
+
+.disclosure-box {
+  display: flex;
+  gap: 0.875rem;
+  align-items: flex-start;
+  background: #F0FFF4;
+  border: 1.5px solid #9AE6B4;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.85rem;
+  color: #276749;
+  line-height: 1.65;
+}
+.disclosure-box svg { flex-shrink: 0; margin-top: 0.1rem; color: #38A169; }
+.disclosure-box strong { color: #1C4532; }
+.disclosure-box a { color: #2F855A; font-weight: 600; }
+
+/* ── PWA Install Banner ───────────────────────────────────────────────────── */
+
+.pwa-banner {
+  display: none;
+  position: fixed;
+  bottom: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--navy);
+  color: var(--white);
+  border-radius: 14px;
+  padding: 0.875rem 1.25rem;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.85rem;
+  z-index: 999;
+  max-width: calc(100vw - 2rem);
+  width: max-content;
+}
+.pwa-banner.visible { display: flex; }
+.pwa-banner p { color: rgba(255,255,255,0.8); margin: 0; font-size: 0.85rem; }
+.pwa-banner strong { color: var(--white); }
+.pwa-install-btn {
+  background: var(--teal);
+  color: var(--white);
+  border: none;
+  border-radius: 8px;
+  padding: 0.45rem 1rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.pwa-install-btn:hover { background: #155788; }
+.pwa-dismiss-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.45);
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 0.2rem;
+  flex-shrink: 0;
+}
+.pwa-dismiss-btn:hover { color: rgba(255,255,255,0.8); }
+
 /* ── Who We Are ─────────────────────────────────────────────────────────── */
 
 #who-we-are {

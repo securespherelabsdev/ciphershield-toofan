@@ -1,0 +1,40 @@
+{
+  "name": "CipherShield — Anonymous Reporting",
+  "short_name": "CipherShield",
+  "description": "Submit anonymous tips about drug activity in Kerala. Your identity is permanently deleted before your report is stored.",
+  "start_url": "/submission/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#0D1B2A",
+  "background_color": "#0D1B2A",
+  "lang": "en",
+  "categories": ["utilities", "government"],
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='24' fill='%230D1B2A'/%3E%3Cpath d='M96 24L40 52v44c0 38 26 73.5 56 81.5 30-8 56-43.5 56-81.5V52L96 24z' fill='%231B6CA8'/%3E%3Cpath d='M76 96l16 16 32-32' stroke='white' stroke-width='10' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='64' fill='%230D1B2A'/%3E%3Cpath d='M256 64L107 139v117c0 101 69 195.5 149 216.5 80-21 149-115.5 149-216.5V139L256 64z' fill='%231B6CA8'/%3E%3Cpath d='M200 256l43 43 85-85' stroke='white' stroke-width='26' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Submit a Report",
+      "short_name": "Submit",
+      "url": "/submission/",
+      "description": "Submit an anonymous tip"
+    },
+    {
+      "name": "Check Report Status",
+      "short_name": "Status",
+      "url": "/status/",
+      "description": "Check your report status using your token"
+    }
+  ]
+}
