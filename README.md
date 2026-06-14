@@ -8,7 +8,7 @@ CipherShield is a zero-knowledge tip-reporting platform. Citizens submit reports
 
 ## Who built this and why
 
-CipherShield was built by **SecureSphereLabs** in partnership with **Kerala Police** to support **Operation Toofan**, an ongoing counter-narcotics initiative. The platform exists because useful intelligence often goes unreported: witnesses fear retaliation, distrust digital systems, or simply cannot find a safe channel. CipherShield eliminates the technical risk of reporting by making identity retention architecturally impossible, not merely policy-prohibited.
+CipherShield was built by **SecureSphereLabs** to support **Operation Toofan**, an ongoing counter-narcotics initiative. The platform exists because useful intelligence often goes unreported: witnesses fear retaliation, distrust digital systems, or simply cannot find a safe channel. CipherShield eliminates the technical risk of reporting by making identity retention architecturally impossible, not merely policy-prohibited.
 
 The codebase is MIT-licensed and fully open to audit by security researchers, civil society organisations, and the press.
 
