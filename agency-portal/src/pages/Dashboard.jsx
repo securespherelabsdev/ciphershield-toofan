@@ -74,11 +74,28 @@ export default function Dashboard() {
 
         {/* Primary stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatCard label="Total Leads"       value={data?.totals?.total}            accent />
-          <StatCard label="Awaiting Review"   value={data?.totals?.awaiting_review}  color="text-amber-600" />
-          <StatCard label="In Field"          value={data?.totals?.dispatched}       color="text-blue-600" />
+          <StatCard label="Total Leads"       value={data?.totals?.total}             accent />
+          <StatCard label="Awaiting Review"   value={data?.totals?.awaiting_review}   color="text-amber-600" />
+          <StatCard label="In Field"          value={data?.totals?.dispatched}        color="text-blue-600" />
           <StatCard label="Actioned (7 days)" value={data?.totals?.actioned_this_week} sub="Closed this week" color="text-green-600" />
         </div>
+
+        {/* Integrity alert strip */}
+        {data?.totals?.flagged_open > 0 && (
+          <div className="flex items-center gap-3 bg-red-50 border border-red-200 rounded-xl px-5 py-3.5">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-red-600 flex-shrink-0">
+              <path d="M8 1L1 14h14L8 1z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+              <path d="M8 6v4M8 12v.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+            </svg>
+            <p className="text-sm text-red-800">
+              <strong>{data.totals.flagged_open}</strong> open report{data.totals.flagged_open > 1 ? 's have' : ' has'} integrity flags that require officer review before dispatch.
+            </p>
+            <button onClick={() => navigate('/leads')}
+              className="ml-auto text-xs font-semibold text-red-700 border border-red-300 bg-white rounded-lg px-3 py-1.5 hover:bg-red-50 transition-colors whitespace-nowrap">
+              Review now →
+            </button>
+          </div>
+        )}
 
         {/* Assignment breakdown + clusters row */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

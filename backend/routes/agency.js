@@ -142,7 +142,7 @@ router.get('/reports', requireAuth, async (req, res) => {
   const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
 
   const [rows] = await db.query(
-    `SELECT id, report_type, district, fp_score, status, assigned_to, created_at, dispatched_at
+    `SELECT id, report_type, district, fp_score, status, assigned_to, created_at, dispatched_at, score_flags_json
      FROM reports ${where}
      ORDER BY fp_score DESC, created_at DESC
      LIMIT ? OFFSET ?`,
@@ -154,7 +154,17 @@ router.get('/reports', requireAuth, async (req, res) => {
     params
   );
 
-  return res.json({ reports: rows, total: countRows[0].total, page: parseInt(page), perPage });
+  const reports = rows.map((r) => {
+    const parsed = r.score_flags_json ? JSON.parse(r.score_flags_json) : null;
+    return {
+      ...r,
+      score_flags_json: undefined,
+      flag_count:       parsed?.flags?.length || 0,
+      critical_flags:   parsed?.flags?.filter((f) => f.severity === 'critical').length || 0,
+    };
+  });
+
+  return res.json({ reports, total: countRows[0].total, page: parseInt(page), perPage });
 });
 
 // ── Report detail ─────────────────────────────────────────────────────────────
@@ -175,15 +185,17 @@ router.get('/reports/:id', requireAuth, async (req, res) => {
   const geoRaw = decrypt(report.geo_location_enc);
   const decrypted = {
     ...report,
-    area_desc: decrypt(report.area_desc_enc),
-    details: decrypt(report.details_enc),
+    area_desc:    decrypt(report.area_desc_enc),
+    details:      decrypt(report.details_enc),
     geo_location: geoRaw ? JSON.parse(geoRaw) : null,
-    ai_summary: report.ai_summary_enc ? JSON.parse(decrypt(report.ai_summary_enc)) : null,
+    ai_summary:   report.ai_summary_enc ? JSON.parse(decrypt(report.ai_summary_enc)) : null,
+    score_flags:  report.score_flags_json ? JSON.parse(report.score_flags_json) : null,
   };
   delete decrypted.area_desc_enc;
   delete decrypted.geo_location_enc;
   delete decrypted.details_enc;
   delete decrypted.ai_summary_enc;
+  delete decrypted.score_flags_json;
   delete decrypted.token_hash;
 
   return res.json(decrypted);
@@ -346,7 +358,8 @@ router.get('/stats', requireAuth, async (req, res) => {
        SUM(status IN ('REVIEW','QUARANTINE')) AS awaiting_review,
        SUM(status = 'DISPATCH') AS dispatched,
        SUM(status IN ('ACTIONED','NO_FINDING','ESCALATED') AND outcome_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)) AS actioned_this_week,
-       SUM(assigned_to IS NULL AND status NOT IN ('ACTIONED','NO_FINDING','ESCALATED')) AS unassigned
+       SUM(assigned_to IS NULL AND status NOT IN ('ACTIONED','NO_FINDING','ESCALATED')) AS unassigned,
+       SUM(score_flags_json IS NOT NULL AND score_flags_json != '{"breakdown":{},"flags":[]}' AND status NOT IN ('ACTIONED','NO_FINDING')) AS flagged_open
      FROM reports WHERE 1=1 ${typeFilter}`,
     typeParams
   );

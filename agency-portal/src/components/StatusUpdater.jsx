@@ -11,11 +11,12 @@ const BTN_STYLE = {
   neutral: 'border border-slate-200 text-slate-600 bg-slate-50 hover:bg-slate-100',
 };
 
-export default function StatusUpdater({ reportId, currentStatus, onUpdate }) {
-  const [pending, setPending]     = useState(null); // the target status being confirmed
+export default function StatusUpdater({ reportId, currentStatus, onUpdate, criticalFlags = [] }) {
+  const [pending, setPending]     = useState(null);
   const [note, setNote]           = useState('');
   const [loading, setLoading]     = useState(false);
   const [error, setError]         = useState(null);
+  const [flagAck, setFlagAck]     = useState(false); // acknowledge critical flags before dispatch
 
   const nextStatuses = TRANSITIONS[currentStatus] || [];
 
@@ -94,8 +95,11 @@ export default function StatusUpdater({ reportId, currentStatus, onUpdate }) {
         note={note}
         onNoteChange={setNote}
         onConfirm={executeTransition}
-        onCancel={() => { setPending(null); setNote(''); }}
+        onCancel={() => { setPending(null); setNote(''); setFlagAck(false); }}
         loading={loading}
+        flagAck={flagAck}
+        setFlagAck={setFlagAck}
+        criticalFlags={pending === 'DISPATCH' ? criticalFlags : []}
       />
     </>
   );
